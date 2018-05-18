@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Fit your own data with fitting.py &#8212; viroconcom 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Reference" href="reference.html" />
+    <link rel="prev" title="Calculate probability contours" href="contours.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="_static/mini_logo.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+
+  </head><body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="index.html">viroconcom 0.1.0 documentation</a> &#187;</li>
+          <li><a href="user_guide.html" accesskey="U">User Guide</a> &#187;</li> 
+      </ul>
+    </div>
+    
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="fit-your-own-data-with-fitting-py">
+<h1>Fit your own data with fitting.py<a class="headerlink" href="#fit-your-own-data-with-fitting-py" title="Permalink to this headline">¶</a></h1>
+<p>This module implements the possibility to fit your own data.</p>
+<p>If you want to fit your own data to a multivariate distribution you have to build an object of the class <code class="docutils literal notranslate"><span class="pre">Fit</span></code> in this module.
+The necessary parameters for building objects of <code class="docutils literal notranslate"><span class="pre">Fit</span></code> are also listed in the documentation of this class.
+Exemplary call:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">example_fit</span> <span class="o">=</span> <span class="n">Fit</span><span class="p">((</span><span class="n">data_1</span><span class="p">,</span> <span class="n">data_2</span><span class="p">),</span> <span class="p">(</span><span class="n">dist_description_0</span><span class="p">,</span> <span class="n">dist_description_1</span><span class="p">),</span> <span class="mi">15</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It’s important that the parameter <code class="docutils literal notranslate"><span class="pre">samples</span></code> is in the form (sample_1, sample_2, …).
+Each sample is a collection of data from type <em>list</em> and also all samples have the same length. The parameter <code class="docutils literal notranslate"><span class="pre">dist_descriptions</span></code>
+should be from type <em>list</em> and contains a dictionary for each dimension in the same sequence of the samples. It should accordingly have
+the same length as <code class="docutils literal notranslate"><span class="pre">samples</span></code>. The last parameter <code class="docutils literal notranslate"><span class="pre">n_steps</span></code> indicates how many distributions should be fitted for a dependent parameter.
+For each distribution an additional parameter is created which affects the final fit.</p>
+<img alt="_images/fit_scale.png" src="_images/fit_scale.png" />
+<p>Each <code class="docutils literal notranslate"><span class="pre">dist_description</span></code> contains the name of the current distribution (i.e. <code class="docutils literal notranslate"><span class="pre">&quot;Weibull&quot;</span></code>). Then it contains the dependency for this dimension
+from type <em>list</em>. In the sequence of <code class="docutils literal notranslate"><span class="pre">shape,</span> <span class="pre">loc,</span> <span class="pre">scale</span></code> it contains integers for the dependency of the current parameter or <em>None</em> if it has no
+dependency. It is important that the dependency is less than the index of the current dimension. The list for the parameter <code class="docutils literal notranslate"><span class="pre">functions</span></code> also has length of three
+and contains information about the used functions for fitting. Actually you can switch between the functions:</p>
+<ul class="simple">
+<li><strong>f1</strong> :  <span class="math notranslate">\(a + b * x^c\)</span></li>
+<li><strong>f2</strong> : <span class="math notranslate">\(a + b * e^{x * c}\)</span></li>
+<li><strong>None</strong> : no dependency</li>
+</ul>
+<p>Example for <code class="docutils literal notranslate"><span class="pre">dist_description</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">example_dist_description</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Lognormal_1&#39;</span><span class="p">,</span> <span class="s1">&#39;dependency&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                                        <span class="s1">&#39;functions&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">)}</span>
+</pre></div>
+</div>
+<p>If the fit is finished it has the attribute <code class="docutils literal notranslate"><span class="pre">mul_var_dist</span></code> that is an object of <code class="docutils literal notranslate"><span class="pre">MultivariateDistribution</span></code> that contains all distributions you
+can use to build a contour for your data. Also it has the attributes <code class="docutils literal notranslate"><span class="pre">mul_param_points</span></code> and <code class="docutils literal notranslate"><span class="pre">mul_dist_points</span></code> which can be used to visualize
+your fit.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <a id="sidebar-anchor"></a>
+    
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="contours.html"
+                        title="previous chapter">Calculate probability contours</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="reference.html"
+                        title="next chapter">Reference</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/fitting.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reference.html" title="Reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="contours.html" title="Calculate probability contours"
+             accesskey="P">previous</a> |</li>
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, viroconcom.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+    </div>
+  </body>
+</html>
